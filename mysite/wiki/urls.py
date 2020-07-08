@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import re_path, path
 #from django.conf.urls import patterns, url
 from . import views
 
 urlpatterns = [
-    path('<str:page_name>/', views.pageView, name='pageView'),
-    
+    re_path('(?P<page_name>[^/]+)/$', views.pageView, name='View'),
+    re_path('(?P<page_name>[^/]+)/edit/$', views.editView, name='Edit'),
+
 ]
 '''
 urlpatterns = patterns('',
