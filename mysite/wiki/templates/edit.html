@@ -6,7 +6,7 @@
 </head>
 <body>
     <h2>Edit {{page_name}} </h2>
-    <form method='post' action='/wiki/{{ page_name }}/save/'>
+    <form method='POST' action='/wiki/{{ page_name }}/save/'>
         {% csrf_token %}
 
         {{ form.content }}

@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
-from wiki.models import Page
+from .models import Page
 from .forms import PageEditForm
 import datetime
-import sqlite3
 
 # Create your views here.
 def pageView(request, page_name):  # request를 제외한 파라미터는 url을 통해 받아온다
@@ -44,15 +43,15 @@ def editView(request, page_name):  # 역시 request와 url을 받아옵니다
     return render(request, 'edit.html', context)
 
 def saveView(request, page_name):
-    if request.POST:
-        '''
+    if request.method == 'POST':
+
         try:
             page_data = Page.objects.get(page_name=page_name)
             print("try")
         except Page.DoesNotExist:
             page_data = Page(page_name=page_name, content='', pub_date=datetime.datetime.now())
             print(page_data.page_name)
-        form = PageEditForm(request.POST.copy(), instance=page_data)
+        form = PageEditForm(request.POST, instance=page_data)
         if form.is_valid():
             form.save()
             print("saved")
@@ -64,16 +63,18 @@ def saveView(request, page_name):
             print(e)
         '''
         form = PageEditForm(request.POST)
+        print(request.POST)
+        print(form)
         if form.is_valid():
             print("valid!")
             post = form.save(commit=False)
             post.page_name = page_name
             post.pub_date = datetime.datetime.now()
             post.save()
-
-        con = sqlite3.connect("c:/Users/SDM/Documents/Github/game-wiki/mysite/db.sqlite3")
-        cur = con.cursor()
-        print(cur.fetchall())
+        '''
+        #con = sqlite3.connect("c:/Users/SDM/Documents/Github/game-wiki/mysite/db.sqlite3")
+        #cur = con.cursor()
+        #print(cur.fetchall())
         return HttpResponseRedirect("/wiki/" + page_name + "/")
     else:
         return HttpResponseRedirect("/wiki/" + page_name + "/edit/")
